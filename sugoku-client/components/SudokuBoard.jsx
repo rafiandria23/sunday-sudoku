@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { TextInput, View, StyleSheet, Button } from "react-native";
 import axios from "axios";
 
+import capitalize from "../helpers/capitalize";
+
 const api = axios.create({ baseURL: "https://sugoku.herokuapp.com" });
 
 const styles = StyleSheet.create({
@@ -27,8 +29,9 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flex: 2,
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: 10
   }
 });
 
@@ -47,18 +50,34 @@ export default function SudokuBoard(props) {
       });
   }, [difficulty]);
 
-  const handleNumberChange = (text, coordinate) => {
-    const nums = "0123456789";
-    if (board[coordinate[0]][coordinate[1]]) {
-      alert(`You can't change THE DEFAULT VALUE!`);
-    } else if (!nums.includes(text)) {
-      alert("Please enter NUMBER!");
-    } else if (text.length > 1) {
-      alert("Please enter ONLY NUMBER BETWEEN 0-9!");
-    } else {
-      const boardToChange = [...board];
-      boardToChange[coordinate[0]][coordinate[1]] = text;
-      setBoard(boardToChange);
+  const handleNumberChange = (nativeEvent, coordinate) => {
+    const nums = "123456789";
+    switch (nativeEvent.key) {
+      case " ":
+        alert("Please enter a number between 1-9!");
+        break;
+
+      case "Backspace":
+        alert("Please enter a number between 1-9!");
+        break;
+
+      case "0":
+        alert(`You can't enter 0 or zero!`);
+        break;
+
+      case board[coordinate[0]][coordinate[1]]:
+        alert(`You can't change already entered number!`);
+        break;
+
+      default:
+        if (!nums.includes(nativeEvent.key)) {
+          alert("Please enter number type only!");
+        } else {
+          const boardToChange = [...board];
+          boardToChange[coordinate[0]][coordinate[1]] = nativeEvent.key;
+          setBoard(boardToChange);
+        }
+        break;
     }
   };
 
@@ -67,10 +86,14 @@ export default function SudokuBoard(props) {
       const subItems = item.map((subItem, idx) => {
         return (
           <TextInput
-            onChangeText={text => handleNumberChange(text, [conIdx, idx])}
+            // onChangeText={text => handleNumberChange(text, [conIdx, idx])}
             key={idx}
             style={styles.boardItem}
             value={subItem === 0 ? "" : String(subItem)}
+            keyboardType="number-pad"
+            onKeyPress={({ nativeEvent }) =>
+              handleNumberChange(nativeEvent, [conIdx, idx])
+            }
           />
         );
       });
@@ -79,33 +102,28 @@ export default function SudokuBoard(props) {
     return <View>{boardContainer}</View>;
   };
 
+  const encodeBoard = board => {
+    return board.reduce(
+      (result, row, i) =>
+        result +
+        `%5B${encodeURIComponent(row)}%5D${
+          i === board.length - 1 ? "" : "%2C"
+        }`,
+      ""
+    );
+  };
+
+  const encodeParams = params => {
+    return Object.keys(params)
+      .map(key => key + "=" + `%5B${encodeBoard(params[key])}%5D`)
+      .join("&");
+  };
+
   const validateSudoku = () => {
-    const boardToValidate = board.map(item => {
-      const subItems = item.map(subItem => {
-        return subItem === "" ? 0 : Number(subItem);
-      });
-      return subItems;
-    });
-
-    const encodeBoard = board =>
-      board.reduce(
-        (result, row, i) =>
-          result +
-          `%5B${encodeURIComponent(row)}%5D${
-            i === board.length - 1 ? "" : "%2C"
-          }`,
-        ""
-      );
-
-    const encodeParams = params =>
-      Object.keys(params)
-        .map(key => key + "=" + `%5B${encodeBoard(params[key])}%5D`)
-        .join("&");
-
     api
-      .post("/validate", encodeParams({ board: boardToValidate }))
+      .post("/validate", encodeParams({ board }))
       .then(({ data }) => {
-        alert(data.status.toUpperCase());
+        alert(`${capitalize(data.status)}!`);
       })
       .catch(err => {
         console.log(err.response);
@@ -113,21 +131,25 @@ export default function SudokuBoard(props) {
   };
 
   const solveSudoku = () => {
-    const boardToSolve = board.map(item => {
-      const subItems = item.map(subItem => {
-        return subItem === "" ? 0 : Number(subItem);
-      });
-      return subItems;
-    });
     api
-      .post("/solve", { board: boardToSolve })
+      .post("/solve", encodeParams({ board }))
       .then(({ data }) => {
         setBoard(data.solution);
-        alert(data.status.toUpperCase());
+        alert(`${capitalize(data.status)}!`);
       })
       .catch(err => {
         console.log(err.response);
       });
+  };
+
+  const resetSudoku = () => {
+    const boardToReset = board.map(item => {
+      const subItems = item.map(subItem => {
+        return "";
+      });
+      return subItems;
+    });
+    setBoard(boardToReset);
   };
 
   return (
@@ -143,6 +165,11 @@ export default function SudokuBoard(props) {
           style={styles.applyButton}
           title="Give Up!"
           onPress={() => solveSudoku()}
+        />
+        <Button
+          style={styles.applyButton}
+          title="Reset"
+          onPress={() => resetSudoku()}
         />
       </View>
     </View>
