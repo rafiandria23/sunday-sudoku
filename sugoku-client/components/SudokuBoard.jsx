@@ -13,14 +13,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center"
   },
-  borderContainer: {
-    flex: 1,
-    flexDirection: "row"
+  boardContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
   },
   mainContainer: {
     flexDirection: "column",
     justifyContent: "center",
-    marginTop: "35%"
+    alignItems: "center",
+    marginTop: "30%"
+  },
+  buttonGroup: {
+    flex: 2,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
@@ -37,11 +45,13 @@ export default function SudokuBoard(props) {
       .catch(err => {
         console.log(err.response);
       });
-  }, []);
+  }, [difficulty]);
 
   const handleNumberChange = (text, coordinate) => {
     const nums = "0123456789";
-    if (!nums.includes(text)) {
+    if (board[coordinate[0]][coordinate[1]]) {
+      alert(`You can't change THE DEFAULT VALUE!`);
+    } else if (!nums.includes(text)) {
       alert("Please enter NUMBER!");
     } else if (text.length > 1) {
       alert("Please enter ONLY NUMBER BETWEEN 0-9!");
@@ -64,9 +74,9 @@ export default function SudokuBoard(props) {
           />
         );
       });
-      return <View>{subItems}</View>;
+      return <View style={styles.boardContainer}>{subItems}</View>;
     });
-    return <View style={styles.borderContainer}>{boardContainer}</View>;
+    return <View>{boardContainer}</View>;
   };
 
   const validateSudoku = () => {
@@ -76,9 +86,43 @@ export default function SudokuBoard(props) {
       });
       return subItems;
     });
+
+    const encodeBoard = board =>
+      board.reduce(
+        (result, row, i) =>
+          result +
+          `%5B${encodeURIComponent(row)}%5D${
+            i === board.length - 1 ? "" : "%2C"
+          }`,
+        ""
+      );
+
+    const encodeParams = params =>
+      Object.keys(params)
+        .map(key => key + "=" + `%5B${encodeBoard(params[key])}%5D`)
+        .join("&");
+
     api
-      .post("/validate", { board: boardToValidate })
+      .post("/validate", encodeParams({ board: boardToValidate }))
       .then(({ data }) => {
+        alert(data.status.toUpperCase());
+      })
+      .catch(err => {
+        console.log(err.response);
+      });
+  };
+
+  const solveSudoku = () => {
+    const boardToSolve = board.map(item => {
+      const subItems = item.map(subItem => {
+        return subItem === "" ? 0 : Number(subItem);
+      });
+      return subItems;
+    });
+    api
+      .post("/solve", { board: boardToSolve })
+      .then(({ data }) => {
+        setBoard(data.solution);
         alert(data.status.toUpperCase());
       })
       .catch(err => {
@@ -89,11 +133,16 @@ export default function SudokuBoard(props) {
   return (
     <View style={styles.mainContainer}>
       {board.length > 0 && renderBoard()}
-      <View>
+      <View style={styles.buttonGroup}>
         <Button
           style={styles.applyButton}
           title="Apply"
           onPress={() => validateSudoku()}
+        />
+        <Button
+          style={styles.applyButton}
+          title="Give Up!"
+          onPress={() => solveSudoku()}
         />
       </View>
     </View>
