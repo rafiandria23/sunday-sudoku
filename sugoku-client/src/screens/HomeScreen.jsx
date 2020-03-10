@@ -25,7 +25,16 @@ export default ({ navigation, route }) => {
 
   const handleDifficultyChange = difficulty => {
     dispatch(setPlayerDifficulty(difficulty));
-  }
+  };
+
+  const handlePlayButton = () => {
+    if (playerName.length < 1) {
+      alert('Player name cannot be empty!');
+    } else {
+      dispatch(fetchBoard(playerDifficulty));
+      navigation.navigate('Board', {difficulty: playerDifficulty});
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -50,6 +59,12 @@ export default ({ navigation, route }) => {
           <Picker.Item label="Hard" value="hard" />
         </Picker>
       </View>
+    
+      <View>
+        <TouchableOpacity onPress={handlePlayButton} style={customStyles.playButton}>
+          <Text>Play!</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -69,5 +84,10 @@ const customStyles = StyleSheet.create({
   difficultyPicker: {
     height: 10,
     width: 100
+  },
+  playButton: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10
   }
 });
