@@ -7,5 +7,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: 'center'
+  },
+  centerOnly: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center'
   }
 });

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   TextInput,
   View,
@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   Text,
   ActivityIndicator
-} from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 
-import capitalize from "../helpers/capitalize";
+import capitalize from '../helpers/capitalize';
 import {
   fetchBoard,
   validateSudoku,
@@ -17,43 +17,45 @@ import {
   resetSudoku,
   setSudoku,
   setSudokuStatus
-} from "../actions/boardActions";
+} from '../actions/boardActions';
+import defaultStyles from '../styles';
 
 export default props => {
   const dispatch = useDispatch();
   const { difficulty } = props;
   const board = useSelector(state => state.boardReducer.board);
   const status = useSelector(state => state.boardReducer.status);
+  const loading = useSelector(state => state.gameReducer.loading);
 
   useEffect(() => {
-    dispatch(setSudokuStatus(""));
+    dispatch(setSudokuStatus(''));
     dispatch(fetchBoard(difficulty));
   }, [difficulty]);
 
   useEffect(() => {
     if (status.length > 0) {
       alert(`${capitalize(status)}!`);
-      dispatch(setSudokuStatus(""));
+      dispatch(setSudokuStatus(''));
     }
   }, [status]);
 
   const handleNumberChange = (text, coordinate) => {
-    const nums = "123456789";
+    const nums = '123456789';
 
     switch (text) {
-      case " ":
-        alert("Please enter a number between 1-9!");
+      case ' ':
+        alert('Please enter a number between 1-9!');
         break;
 
-      case "0":
+      case '0':
         alert(`You can't enter 0 or zero!`);
         break;
 
       default:
         if (text.length > 1) {
-          alert("Please enter a number between 1-9!");
+          alert('Please enter a number between 1-9!');
         } else if (!nums.includes(text)) {
-          alert("Please enter number type only!");
+          alert('Please enter number type only!');
         } else {
           const boardToChange = [...board];
           boardToChange[coordinate[0]][coordinate[1]].val = text;
@@ -77,7 +79,7 @@ export default props => {
               col.val.length > 0 ? styles.boardItemFilled : styles.boardItem
             }
             value={col.val}
-            keyboardType="number-pad"
+            keyboardType='number-pad'
             // onKeyPress={({ nativeEvent }) =>
             //   handleNumberChange(nativeEvent, [rowIdx, colIdx])
             // }
@@ -92,7 +94,7 @@ export default props => {
       );
     });
     return (
-      <View>
+      <View style={styles.mainContainer}>
         {boardContainer}
         <View style={styles.buttonGroup}>
           <View style={styles.levelPicker}>
@@ -121,19 +123,19 @@ export default props => {
               style={styles.button}
               onPress={() => dispatch(validateSudoku(board))}
             >
-              <Text>Apply</Text>
+              <Text style={styles.buttonText}>Apply</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
               onPress={() => dispatch(solveSudoku(board))}
             >
-              <Text>Give Up!</Text>
+              <Text style={styles.buttonText}>Give Up!</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
               onPress={() => dispatch(resetSudoku(board))}
             >
-              <Text>Reset</Text>
+              <Text style={styles.buttonText}>Reset</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -142,11 +144,15 @@ export default props => {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      {board.length > 0 ? (
+    <View>
+      {loading !== true ? (
         renderBoard()
       ) : (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator
+          style={defaultStyles.centerOnly}
+          size='large'
+          color='#0000ff'
+        />
       )}
     </View>
   );
@@ -156,55 +162,67 @@ const styles = StyleSheet.create({
   boardItem: {
     width: 40,
     height: 40,
-    borderColor: "black",
+    borderColor: 'pink',
     borderWidth: 1,
     fontSize: 20,
-    textAlign: "center"
+    color: 'green',
+    textAlign: 'center'
   },
   boardItemFilled: {
     width: 40,
     height: 40,
-    borderColor: "black",
-    backgroundColor: "blue",
+    borderColor: 'pink',
+    backgroundColor: 'blue',
     borderWidth: 1,
     fontSize: 20,
-    textAlign: "center"
+    color: 'white',
+    textAlign: 'center'
   },
   boardContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
   },
   mainContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "30%"
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    flex: 6
   },
   buttonGroup: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     margin: 10
   },
   button: {
-    backgroundColor: "grey",
-    padding: 8,
-    margin: 8
+    backgroundColor: 'pink',
+    padding: 12,
+    margin: 10,
+    borderRadius: 8
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20
   },
   levelPicker: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    backgroundColor: 'violet',
+    padding: 10,
+    margin: 10,
+    borderRadius: 8
   },
   levelButton: {
-    color: "blue",
+    color: 'blue',
     padding: 8,
     margin: 8
   },
   boardAction: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline'
   }
 });

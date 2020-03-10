@@ -31,7 +31,7 @@ export default ({ navigation, route }) => {
     if (playerName.length < 1) {
       alert('Player name cannot be empty!');
     } else {
-      dispatch(fetchBoard(playerDifficulty));
+      // dispatch(fetchBoard(playerDifficulty));
       navigation.navigate('Board', { difficulty: playerDifficulty });
     }
   };
