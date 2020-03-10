@@ -38,35 +38,52 @@ const styles = StyleSheet.create({
 export default function SudokuBoard(props) {
   const { difficulty = "easy" } = props;
   const [board, setBoard] = useState([]);
+  const [apiBoardCoordinates, setApiBoardCoordinates] = useState([]);
 
   useEffect(() => {
     api
       .get(`/board?difficulty=${difficulty}`)
       .then(({ data }) => {
-        setBoard(data.board);
+        const apiBoard = data.board;
+        setBoard(apiBoard);
+        const defaultBoardCoordinates = [];
+        apiBoard.forEach((row, rowIdx) => {
+          const defaultCol = [];
+          row.forEach((col, colIdx) => {
+            col !== 0 ? defaultCol.push([rowIdx, colIdx]) : '';
+          });
+          defaultBoardCoordinates.push(defaultCol);
+        });
+        setApiBoardCoordinates(defaultBoardCoordinates)
       })
       .catch(err => {
         console.log(err.response);
       });
   }, [difficulty]);
 
+  const setDefaultBoard = (coordinate) => {
+    let result = true;
+    apiBoardCoordinates.forEach((row, rowIdx) => {
+      row.forEach((col, colIdx) => {
+        console.log({ coordinate });
+        if (coordinate === col) {
+          console.log("==============");
+        }
+      });
+    });
+    return result;
+  }
+
   const handleNumberChange = (nativeEvent, coordinate) => {
     const nums = "123456789";
+
     switch (nativeEvent.key) {
       case " ":
         alert("Please enter a number between 1-9!");
         break;
 
-      case "Backspace":
-        alert("Please enter a number between 1-9!");
-        break;
-
       case "0":
         alert(`You can't enter 0 or zero!`);
-        break;
-
-      case board[coordinate[0]][coordinate[1]]:
-        alert(`You can't change already entered number!`);
         break;
 
       default:
@@ -82,22 +99,23 @@ export default function SudokuBoard(props) {
   };
 
   const renderBoard = () => {
-    const boardContainer = board.map((item, conIdx) => {
-      const subItems = item.map((subItem, idx) => {
+    const boardContainer = board.map((row, rowIdx) => {
+      const columns = row.map((col, colIdx) => {
         return (
           <TextInput
             // onChangeText={text => handleNumberChange(text, [conIdx, idx])}
-            key={idx}
+            key={colIdx}
             style={styles.boardItem}
-            value={subItem === 0 ? "" : String(subItem)}
+            value={col === 0 ? "" : String(col)}
             keyboardType="number-pad"
             onKeyPress={({ nativeEvent }) =>
-              handleNumberChange(nativeEvent, [conIdx, idx])
+              handleNumberChange(nativeEvent, [rowIdx, colIdx])
             }
+            editable={setDefaultBoard([rowIdx, colIdx])}
           />
         );
       });
-      return <View style={styles.boardContainer}>{subItems}</View>;
+      return <View style={styles.boardContainer}>{columns}</View>;
     });
     return <View>{boardContainer}</View>;
   };
