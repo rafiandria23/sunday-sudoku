@@ -22,7 +22,7 @@ import defaultStyles from '../styles';
 
 export default props => {
   const dispatch = useDispatch();
-  const { difficulty } = props;
+  const { difficulty, navigation, route } = props;
   const board = useSelector(state => state.boardReducer.board);
   const status = useSelector(state => state.boardReducer.status);
   const loading = useSelector(state => state.gameReducer.loading);
@@ -63,6 +63,11 @@ export default props => {
         }
         break;
     }
+  };
+
+  const handleFinishButton = () => {
+    navigation.navigate('Finish');
+    // console.log(props);
   };
 
   const renderBoard = () => {
@@ -136,6 +141,11 @@ export default props => {
               onPress={() => dispatch(resetSudoku(board))}
             >
               <Text style={styles.buttonText}>Reset</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boardAction}>
+            <TouchableOpacity onPress={handleFinishButton}>
+              <Text>RUN AWAY??</Text>
             </TouchableOpacity>
           </View>
         </View>
