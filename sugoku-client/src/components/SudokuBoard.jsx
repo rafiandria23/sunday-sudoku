@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { TextInput, View, StyleSheet, Button } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import capitalize from "../helpers/capitalize";
@@ -8,55 +14,27 @@ import {
   validateSudoku,
   solveSudoku,
   resetSudoku,
-  setSudoku
+  setSudoku,
+  setSudokuStatus
 } from "../actions/boardActions";
-
-const styles = StyleSheet.create({
-  boardItem: {
-    width: 40,
-    height: 40,
-    borderColor: "black",
-    borderWidth: 1,
-    fontSize: 20,
-    textAlign: "center"
-  },
-  boardItemFilled: {
-    width: 40,
-    height: 40,
-    borderColor: "black",
-    backgroundColor: "blue",
-    borderWidth: 1,
-    fontSize: 20,
-    textAlign: "center"
-  },
-  boardContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  mainContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "30%"
-  },
-  buttonGroup: {
-    flex: 2,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: 10
-  }
-});
 
 export default props => {
   const dispatch = useDispatch();
   const { difficulty } = props;
   const board = useSelector(state => state.boardReducer.board);
+  const status = useSelector(state => state.boardReducer.status);
 
   useEffect(() => {
+    dispatch(setSudokuStatus(""));
     dispatch(fetchBoard(difficulty));
   }, [difficulty]);
+
+  useEffect(() => {
+    if (status.length > 0) {
+      alert(`${capitalize(status)}!`);
+      dispatch(setSudokuStatus(""));
+    }
+  }, [status]);
 
   const handleNumberChange = (text, coordinate) => {
     const nums = "123456789";
@@ -119,22 +97,67 @@ export default props => {
     <View style={styles.mainContainer}>
       {board.length > 0 && renderBoard()}
       <View style={styles.buttonGroup}>
-        <Button
-          style={styles.applyButton}
-          title="Apply"
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => dispatch(validateSudoku(board))}
-        />
-        <Button
-          style={styles.applyButton}
-          title="Give Up!"
+        >
+          <Text>Apply</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => dispatch(solveSudoku(board))}
-        />
-        <Button
-          style={styles.applyButton}
-          title="Reset"
+        >
+          <Text>Give Up!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => dispatch(resetSudoku(board))}
-        />
+        >
+          <Text>Reset</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  boardItem: {
+    width: 40,
+    height: 40,
+    borderColor: "black",
+    borderWidth: 1,
+    fontSize: 20,
+    textAlign: "center"
+  },
+  boardItemFilled: {
+    width: 40,
+    height: 40,
+    borderColor: "black",
+    backgroundColor: "blue",
+    borderWidth: 1,
+    fontSize: 20,
+    textAlign: "center"
+  },
+  boardContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  mainContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "30%"
+  },
+  buttonGroup: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: 10
+  },
+  button: {
+    backgroundColor: "grey",
+    padding: 8,
+    margin: 8
+  }
+});

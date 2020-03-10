@@ -31,10 +31,10 @@ export const fetchBoard = (difficulty) => {
   };
 };
 
-const restoredBoard = board => {
+const restoreBoard = board => {
   const restoredBoard = board.map(row => {
     return row.map(col => {
-      return Number(col.value);
+      return Number(col.val);
     });
   });
   return restoredBoard;
@@ -65,9 +65,9 @@ const validateSudokuCompleted = board => ({
 export const validateSudoku = (board) => {
   return dispatch => {
     api
-      .post("/validate", encodeParams({ board: restoredBoard(board) }))
+      .post("/validate", encodeParams({ board: restoreBoard(board) }))
       .then(({ data }) => {
-        alert(`${capitalize(data.status)}!`);
+        dispatch(setSudokuStatus(data.status));
         dispatch(validateSudokuCompleted(board));
       })
       .catch(err => {
@@ -84,11 +84,11 @@ const solveSudokuCompleted = (board) => ({
 });
 
 export const solveSudoku = (board) => {
+  board = restoreBoard(board);
   return dispatch => {
     api
-      .post("/solve", encodeParams({ board: restoredBoard() }))
+      .post("/solve", encodeParams({ board }))
       .then(({ data }) => {
-        alert(`${capitalize(data.status)}!`);
         const apiBoard = data.solution;
         const defaultBoardCoordinates = apiBoard.map(row => {
           return row.map(col => {
@@ -98,6 +98,7 @@ export const solveSudoku = (board) => {
             return { val: String(col), canChange: false };
           });
         });
+        dispatch(setSudokuStatus(data.status));
         dispatch(solveSudokuCompleted(defaultBoardCoordinates));
       })
       .catch(err => {
@@ -121,6 +122,7 @@ export const resetSudoku = (board) => {
         return col;
       });
     });
+    dispatch(setSudokuStatus('successfuly reset!'));
     dispatch(resetSudokuCompleted(boardToReset));
   }
 };
@@ -129,5 +131,12 @@ export const setSudoku = (board) => ({
   type: 'SET_SUDOKU',
   payload: {
     board
+  }
+});
+
+export const setSudokuStatus = (status) => ({
+  type: 'SET_SUDOKU_STATUS',
+  payload: {
+    status
   }
 });

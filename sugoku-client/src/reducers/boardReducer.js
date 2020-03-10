@@ -1,5 +1,6 @@
 const initialState = {
-  board: []
+  board: [],
+  status: ''
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +20,9 @@ export default (state = initialState, action) => {
     case 'SET_SUDOKU':
       return { ...state, board: action.payload.board };
 
+    case 'SET_SUDOKU_STATUS':
+      return { ...state, status: action.payload.status };
+    
     default:
       return state;
   }
