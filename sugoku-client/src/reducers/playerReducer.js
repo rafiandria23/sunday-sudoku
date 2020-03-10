@@ -1,6 +1,6 @@
 const initialState = {
   name: '',
-  difficulty: '',
+  difficulty: 'easy',
   score: 0,
   hints: 3
 };
@@ -11,7 +11,7 @@ export default (state = initialState, action) => {
       return { ...state, name: action.payload.name };
   
     case 'SET_PLAYER_DIFFICULTY':
-      return { ...state, level: action.payload.difficulty };
+      return { ...state, difficulty: action.payload.difficulty };
     
     case 'SET_PLAYER_SCORE':
       return { ...state, score: action.payload.score };
