@@ -4,7 +4,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Text
+  Text,
+  ActivityIndicator
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -90,32 +91,63 @@ export default props => {
         </View>
       );
     });
-    return <View>{boardContainer}</View>;
+    return (
+      <View>
+        {boardContainer}
+        <View style={styles.buttonGroup}>
+          <View style={styles.levelPicker}>
+            <Text>Pick a level:</Text>
+            <TouchableOpacity
+              style={styles.levelButton}
+              onPress={() => dispatch(fetchBoard('easy'))}
+            >
+              <Text>Easy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.levelButton}
+              onPress={() => dispatch(fetchBoard('medium'))}
+            >
+              <Text>Medium</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.levelButton}
+              onPress={() => dispatch(fetchBoard('hard'))}
+            >
+              <Text>Hard</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boardAction}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => dispatch(validateSudoku(board))}
+            >
+              <Text>Apply</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => dispatch(solveSudoku(board))}
+            >
+              <Text>Give Up!</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => dispatch(resetSudoku(board))}
+            >
+              <Text>Reset</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
   };
 
   return (
     <View style={styles.mainContainer}>
-      {board.length > 0 && renderBoard()}
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => dispatch(validateSudoku(board))}
-        >
-          <Text>Apply</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => dispatch(solveSudoku(board))}
-        >
-          <Text>Give Up!</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => dispatch(resetSudoku(board))}
-        >
-          <Text>Reset</Text>
-        </TouchableOpacity>
-      </View>
+      {board.length > 0 ? (
+        renderBoard()
+      ) : (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
     </View>
   );
 };
@@ -159,5 +191,20 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
     padding: 8,
     margin: 8
+  },
+  levelPicker: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline"
+  },
+  levelButton: {
+    color: "blue",
+    padding: 8,
+    margin: 8
+  },
+  boardAction: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline"
   }
 });
