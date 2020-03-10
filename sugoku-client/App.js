@@ -1,22 +1,27 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+// NPM PACKAGES
+import React from "react";
+import { Text, View } from "react-native";
+import { Provider } from "react-redux";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from '@react-navigation/stack';
 
-import SudokuBoard from './components/SudokuBoard';
+// LOCAL DEPS
+import store from "./src/stores";
+
+// LOCAL COMPONENTS
+import { HomeScreen, BoardScreen } from './src/screens';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <SudokuBoard difficulty='easy' />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Board" component={BoardScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center'
-  },
-});

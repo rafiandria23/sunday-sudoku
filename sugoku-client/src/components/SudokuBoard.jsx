@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, View, StyleSheet, Button } from "react-native";
-import axios from "axios";
+
+import { fetchBoard } from '../actions/boardActions';
 
 import capitalize from "../helpers/capitalize";
-
-const api = axios.create({ baseURL: "https://sugoku.herokuapp.com" });
 
 const styles = StyleSheet.create({
   boardItem: {
@@ -49,23 +48,7 @@ export default function SudokuBoard(props) {
   const [board, setBoard] = useState([]);
 
   useEffect(() => {
-    api
-      .get(`/board?difficulty=${difficulty}`)
-      .then(({ data }) => {
-        const apiBoard = data.board;
-        const defaultBoardCoordinates = apiBoard.map(row => {
-          return row.map(col => {
-            if (col === 0) {
-              return { val: "", canChange: true };
-            }
-            return { val: String(col), canChange: false };
-          });
-        });
-        setBoard(defaultBoardCoordinates);
-      })
-      .catch(err => {
-        console.log(err.response);
-      });
+    fetchBoard(difficulty);
   }, [difficulty]);
 
   const handleNumberChange = (text, coordinate) => {
