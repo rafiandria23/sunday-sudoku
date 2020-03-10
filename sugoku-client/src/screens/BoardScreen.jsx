@@ -3,10 +3,12 @@ import { View, Text } from 'react-native';
 
 import { SudokuBoard } from '../components';
 
-export default ({navigation, route}) => {
+export default ({ navigation, route }) => {
+  const difficulty = route.params.difficulty;
+  
   return (
     <View>
-      <SudokuBoard />
+      <SudokuBoard difficulty={difficulty} />
     </View>
   );
 };

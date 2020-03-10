@@ -124,3 +124,10 @@ export const resetSudoku = (board) => {
     dispatch(resetSudokuCompleted(boardToReset));
   }
 };
+
+export const setSudoku = (board) => ({
+  type: 'SET_SUDOKU',
+  payload: {
+    board
+  }
+});

@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { TextInput, View, StyleSheet, Button } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import capitalize from "../helpers/capitalize";
+import {
+  fetchBoard,
+  validateSudoku,
+  solveSudoku,
+  resetSudoku,
+  setSudoku
+} from "../actions/boardActions";
 
 const styles = StyleSheet.create({
   boardItem: {
@@ -42,9 +49,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function SudokuBoard({ navigation, route }) {
-  const difficulty = route.params.difficulty;
-  const board = useSelector(state.boardReducer.board);
+export default props => {
+  const dispatch = useDispatch();
+  const { difficulty } = props;
+  const board = useSelector(state => state.boardReducer.board);
+
+  useEffect(() => {
+    dispatch(fetchBoard(difficulty));
+  }, [difficulty]);
 
   const handleNumberChange = (text, coordinate) => {
     const nums = "123456789";
@@ -66,7 +78,7 @@ export default function SudokuBoard({ navigation, route }) {
         } else {
           const boardToChange = [...board];
           boardToChange[coordinate[0]][coordinate[1]].val = text;
-          setBoard(boardToChange);
+          dispatch(setSudoku(boardToChange));
         }
         break;
     }
@@ -103,22 +115,6 @@ export default function SudokuBoard({ navigation, route }) {
     return <View>{boardContainer}</View>;
   };
 
-  const solveSudoku = () => {
-    api
-      .post("/solve", encodeParams({ board: restoredBoard() }))
-      .then(({ data }) => {
-        setBoard(data.solution);
-        alert(`${capitalize(data.status)}!`);
-      })
-      .catch(err => {
-        console.log(err.response);
-      });
-  };
-
-  const resetSudoku = () => {
-    
-  };
-
   return (
     <View style={styles.mainContainer}>
       {board.length > 0 && renderBoard()}
@@ -126,19 +122,19 @@ export default function SudokuBoard({ navigation, route }) {
         <Button
           style={styles.applyButton}
           title="Apply"
-          onPress={() => validateSudoku()}
+          onPress={() => dispatch(validateSudoku(board))}
         />
         <Button
           style={styles.applyButton}
           title="Give Up!"
-          onPress={() => solveSudoku()}
+          onPress={() => dispatch(solveSudoku(board))}
         />
         <Button
           style={styles.applyButton}
           title="Reset"
-          onPress={() => resetSudoku()}
+          onPress={() => dispatch(resetSudoku(board))}
         />
       </View>
     </View>
   );
-}
+};

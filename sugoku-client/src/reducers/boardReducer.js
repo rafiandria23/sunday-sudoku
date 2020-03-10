@@ -15,6 +15,9 @@ export default (state = initialState, action) => {
 
     case "RESET_SUDOKU":
       return { ...state, board: action.payload.board };
+    
+    case 'SET_SUDOKU':
+      return { ...state, board: action.payload.board };
 
     default:
       return state;
