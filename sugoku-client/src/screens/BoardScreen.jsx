@@ -1,18 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Keyboard
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import CountDown from "react-native-countdown-component";
-import LottieView from "lottie-react-native";
+  Keyboard,
+  Platform,
+  ActivityIndicator
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import CountDown from 'react-native-countdown-component';
+import LottieView from 'lottie-react-native';
 
-import { SudokuBoard } from "../components";
-import capitalize from "../helpers/capitalize";
+import { SudokuBoard } from '../components';
+import { capitalize } from '../helpers';
 import {
   fetchBoard,
   validateSudoku,
@@ -20,7 +22,7 @@ import {
   resetSudoku,
   setSudoku,
   setSudokuStatus
-} from "../actions/boardActions";
+} from '../actions/boardActions';
 
 export default ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -33,41 +35,41 @@ export default ({ navigation, route }) => {
   const playerDifficulty = useSelector(state => state.playerReducer.difficulty);
 
   useEffect(() => {
-    dispatch(setSudokuStatus(""));
+    dispatch(setSudokuStatus(''));
     dispatch(fetchBoard(difficulty));
   }, [difficulty]);
 
   useEffect(() => {
     if (status.length > 0) {
       alert(`${capitalize(status)}!`);
-      dispatch(setSudokuStatus(""));
+      dispatch(setSudokuStatus(''));
     }
   }, [status]);
 
   useEffect(() => {
     if (playerScore !== 0) {
-      navigation.navigate("Finish");
+      navigation.navigate('Finish');
     }
   }, [playerScore]);
 
   const countdownOnFinish = () => {
     alert(`Time's up!`);
-    navigation.navigate("Finish");
+    navigation.navigate('Finish');
   };
 
   const handleFinishButton = () => {
-    navigation.navigate("Finish");
+    navigation.navigate('Finish');
   };
 
   const decidePlayDuration = () => {
     switch (playerDifficulty) {
-      case "easy":
+      case 'easy':
         return 60 * 15;
 
-      case "medium":
+      case 'medium':
         return 60 * 12;
 
-      case "hard":
+      case 'hard':
         return 60 * 9;
 
       default:
@@ -93,9 +95,9 @@ export default ({ navigation, route }) => {
               until={decidePlayDuration()}
               size={20}
               onFinish={countdownOnFinish}
-              digitStyle={{ backgroundColor: "#FFF" }}
-              digitTxtStyle={{ color: "blue" }}
-              timeToShow={["M", "S"]}
+              digitStyle={{ backgroundColor: '#FFF' }}
+              digitTxtStyle={{ color: 'blue' }}
+              timeToShow={['M', 'S']}
             />
           </View>
           <View style={customStyles.playerDataItem}>
@@ -122,19 +124,19 @@ export default ({ navigation, route }) => {
                 <Text>Pick a difficulty:</Text>
                 <TouchableOpacity
                   style={customStyles.difficultyButtonEasy}
-                  onPress={() => dispatch(fetchBoard("easy"))}
+                  onPress={() => dispatch(fetchBoard('easy'))}
                 >
                   <Text style={customStyles.difficultyText}>Easy</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={customStyles.difficultyButtonMedium}
-                  onPress={() => dispatch(fetchBoard("medium"))}
+                  onPress={() => dispatch(fetchBoard('medium'))}
                 >
                   <Text style={customStyles.difficultyText}>Medium</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={customStyles.difficultyButtonHard}
-                  onPress={() => dispatch(fetchBoard("hard"))}
+                  onPress={() => dispatch(fetchBoard('hard'))}
                 >
                   <Text style={customStyles.difficultyText}>Hard</Text>
                 </TouchableOpacity>
@@ -174,52 +176,57 @@ export default ({ navigation, route }) => {
     );
   };
 
-  const renderLottieLoading = () => {
-    return (
-      <LottieView
-        autoPlay
-        style={customStyles.lottieLoading}
-        source={require("../../assets/island.json")}
-      />
-    );
+  const renderLoading = () => {
+    if (Platform.OS !== 'ios') {
+      return <ActivityIndicator size='large' color='#0000ff' />;
+    } else {
+      return (
+        <LottieView
+          autoPlay
+          loop
+          style={customStyles.lottieLoading}
+          source={require('../../assets/island.json')}
+        />
+      );
+    }
   };
 
   return (
     <View style={customStyles.boardContainer}>
-      {loading ? renderLottieLoading() : renderBoardScreen()}
+      {loading ? renderLoading() : renderBoardScreen()}
     </View>
   );
 };
 
 const customStyles = StyleSheet.create({
   boardContainer: {
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
     marginTop: 12
   },
   playerDataContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignContent: "center",
-    alignItems: "baseline"
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+    alignItems: 'baseline'
   },
   playerDataItem: {
     flex: 3,
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
     margin: 10
   },
   playerGreeterText: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 25
   },
   sudokuTimerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignContent: "center",
-    alignItems: "baseline"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'baseline'
   },
   timeRemainingText: {
     marginVertical: 5
@@ -228,88 +235,88 @@ const customStyles = StyleSheet.create({
     marginVertical: 5
   },
   playerDetails: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start'
   },
   totalScoreTitle: {
-    borderBottomColor: "black",
+    borderBottomColor: 'black',
     borderBottomWidth: 1
   },
   totalScore: {
     marginVertical: 3,
     borderTopWidth: 2,
-    borderTopColor: "pink"
+    borderTopColor: 'pink'
   },
   lottieLoading: {
     height: 200,
     width: 200
   },
   buttonGroup: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     margin: 10
   },
   button: {
-    backgroundColor: "pink",
+    backgroundColor: 'pink',
     padding: 12,
     margin: 10,
     borderRadius: 8
   },
   buttonText: {
-    color: "white",
+    color: 'white',
     fontSize: 20
   },
   difficultyPicker: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
     padding: 10,
     margin: 10
   },
   difficultyButtonEasy: {
-    backgroundColor: "green",
+    backgroundColor: 'green',
     padding: 8,
     margin: 8,
     borderRadius: 8
   },
   difficultyButtonMedium: {
-    backgroundColor: "orange",
+    backgroundColor: 'orange',
     padding: 8,
     margin: 8,
     borderRadius: 8
   },
   difficultyButtonHard: {
-    backgroundColor: "red",
+    backgroundColor: 'red',
     padding: 8,
     margin: 8,
     borderRadius: 8
   },
   difficultyText: {
-    color: "white"
+    color: 'white'
   },
   boardAction: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline'
   },
   runAwayButton: {
     padding: 10,
-    backgroundColor: "orange",
+    backgroundColor: 'orange',
     borderRadius: 8
   },
   runAwayText: {
-    color: "white",
+    color: 'white',
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   totalScoreContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     borderWidth: 2,
     borderRadius: 8,
     padding: 8
   },
   difficultyStatusContainer: {
-    alignItems: "center"
+    alignItems: 'center'
   },
   difficultyStatus: {
     marginVertical: 3
