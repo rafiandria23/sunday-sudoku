@@ -21,7 +21,8 @@ export default ({ navigation, route }) => {
   const handlePlayButton = () => {
     const playerData = {
       name: playerName,
-      score: playerScore
+      score: playerScore,
+      id: leaderboard.length + 1
     };
     const validatedPlayers = leaderboard.filter(
       player => player.name === playerData.name
