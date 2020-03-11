@@ -37,7 +37,11 @@ export default ({ navigation, route }) => {
     }
   }, [status]);
 
-  useEffect(() => {}, [playerScore]);
+  useEffect(() => {
+    if (playerScore !== 0) {
+      navigation.navigate("Finish");
+    }
+  }, [playerScore]);
 
   const countdownOnFinish = () => {
     alert(`Time's up!`);
