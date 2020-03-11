@@ -1,8 +1,7 @@
 const initialState = {
   name: '',
   difficulty: 'easy',
-  score: 0,
-  hints: 3
+  score: 0
 };
 
 export default (state = initialState, action) => {

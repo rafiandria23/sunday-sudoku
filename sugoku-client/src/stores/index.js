@@ -1,12 +1,18 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 
-import { boardReducer, playerReducer, gameReducer } from '../reducers';
+import {
+  boardReducer,
+  playerReducer,
+  gameReducer,
+  leaderboardReducer
+} from "../reducers";
 
 const reducers = combineReducers({
   boardReducer,
   playerReducer,
-  gameReducer
+  gameReducer,
+  leaderboardReducer
 });
 
 const store = createStore(reducers, applyMiddleware(thunk));

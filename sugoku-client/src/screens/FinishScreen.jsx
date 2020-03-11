@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { View, Text } from "react-native";
 
-import styles from '../styles';
+import styles from "../styles";
+
+import { Leaderboard } from "../components";
 
 export default ({ navigation, route }) => {
   return (
     <View style={styles.container}>
-      <Text>This is Finish Page</Text>
+      <Leaderboard />
     </View>
   );
 };

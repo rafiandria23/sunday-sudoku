@@ -1,13 +1,16 @@
-import React from 'react';
-import { View, Text, StyleSheet, Picker, TouchableOpacity } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+import { View, Text, StyleSheet, Picker, TouchableOpacity } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 
-import styles from '../styles';
+// import styles from '../styles';
 
-import { setPlayerDifficulty } from '../actions/playerActions';
+import { setPlayerDifficulty } from "../actions/playerActions";
+import { addPlayer } from "../actions/leaderboardActions.js";
 
 export default ({ navigation, route }) => {
   const dispatch = useDispatch();
+  const playerName = useSelector(state => state.playerReducer.name);
+  const playerScore = useSelector(state => state.playerReducer.score);
   const playerDifficulty = useSelector(state => state.playerReducer.difficulty);
 
   const handleDifficultyChange = difficulty => {
@@ -15,7 +18,12 @@ export default ({ navigation, route }) => {
   };
 
   const handlePlayButton = () => {
-    navigation.navigate('Board', { difficulty: playerDifficulty });
+    const playerData = {
+      name: playerName,
+      score: playerScore
+    };
+    dispatch(addPlayer(playerData));
+    navigation.navigate("Board", { difficulty: playerDifficulty });
   };
 
   return (
@@ -26,9 +34,9 @@ export default ({ navigation, route }) => {
         style={customStyles.difficultyPicker}
         onValueChange={itemValue => handleDifficultyChange(itemValue)}
       >
-        <Picker.Item color='green' label='Easy' value='easy' />
-        <Picker.Item color='orange' label='Medium' value='medium' />
-        <Picker.Item color='red' label='Hard' value='hard' />
+        <Picker.Item color="green" label="Easy" value="easy" />
+        <Picker.Item color="orange" label="Medium" value="medium" />
+        <Picker.Item color="red" label="Hard" value="hard" />
       </Picker>
       <TouchableOpacity
         style={customStyles.playButton}
@@ -47,21 +55,21 @@ const customStyles = StyleSheet.create({
     margin: 20
   },
   difficultyContainer: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
     margin: 20
   },
   headerTitle: {
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: "bold"
   },
   playText: {
-    color: 'white'
+    color: "white"
   },
   playButton: {
     padding: 10,
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     borderRadius: 8
   }
 });
