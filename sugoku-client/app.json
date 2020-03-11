@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Sunday Sudoku",
+    "name": "SundaySudoku",
     "slug": "sugoku-client",
     "privacy": "public",
     "sdkVersion": "36.0.0",
