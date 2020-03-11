@@ -11,8 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import styles from '../styles';
 
-import { setPlayerName, setPlayerDifficulty } from '../actions/playerActions';
-import { fetchBoard } from '../actions/boardActions';
+import { setPlayerName } from '../actions/playerActions';
 
 export default ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -26,8 +25,6 @@ export default ({ navigation, route }) => {
     if (playerName.length < 1) {
       alert('Player name cannot be empty!');
     } else {
-      // dispatch(fetchBoard(playerDifficulty));
-      // navigation.navigate('Board', { difficulty: playerDifficulty });
       navigation.navigate('Difficulty Selection');
     }
   };

@@ -102,25 +102,25 @@ export default props => {
       <View style={styles.mainContainer}>
         {boardContainer}
         <View style={styles.buttonGroup}>
-          <View style={styles.levelPicker}>
-            <Text>Pick a level:</Text>
+          <View style={styles.difficultyPicker}>
+            <Text>Pick a difficulty:</Text>
             <TouchableOpacity
-              style={styles.levelButton}
+              style={styles.difficultyButtonEasy}
               onPress={() => dispatch(fetchBoard('easy'))}
             >
-              <Text>Easy</Text>
+              <Text style={styles.difficultyText}>Easy</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.levelButton}
+              style={styles.difficultyButtonMedium}
               onPress={() => dispatch(fetchBoard('medium'))}
             >
-              <Text>Medium</Text>
+              <Text style={styles.difficultyText}>Medium</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.levelButton}
+              style={styles.difficultyButtonHard}
               onPress={() => dispatch(fetchBoard('hard'))}
             >
-              <Text>Hard</Text>
+              <Text style={styles.difficultyText}>Hard</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.boardAction}>
@@ -144,8 +144,11 @@ export default props => {
             </TouchableOpacity>
           </View>
           <View style={styles.boardAction}>
-            <TouchableOpacity onPress={handleFinishButton}>
-              <Text>RUN AWAY??</Text>
+            <TouchableOpacity
+              style={styles.runAwayButton}
+              onPress={handleFinishButton}
+            >
+              <Text style={styles.runAwayText}>RUN AWAY??</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -216,23 +219,47 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20
   },
-  levelPicker: {
+  difficultyPicker: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline',
-    backgroundColor: 'violet',
     padding: 10,
-    margin: 10,
+    margin: 10
+  },
+  difficultyButtonEasy: {
+    backgroundColor: 'green',
+    padding: 8,
+    margin: 8,
     borderRadius: 8
   },
-  levelButton: {
-    color: 'blue',
+  difficultyButtonMedium: {
+    backgroundColor: 'orange',
     padding: 8,
-    margin: 8
+    margin: 8,
+    borderRadius: 8
+  },
+  difficultyButtonHard: {
+    backgroundColor: 'red',
+    padding: 8,
+    margin: 8,
+    borderRadius: 8
+  },
+  difficultyText: {
+    color: 'white'
   },
   boardAction: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline'
+  },
+  runAwayButton: {
+    padding: 10,
+    backgroundColor: 'orange',
+    borderRadius: 8
+  },
+  runAwayText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold'
   }
 });
