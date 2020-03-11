@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import CountDown from "react-native-countdown-component";
 import LottieView from "lottie-react-native";
@@ -93,70 +100,75 @@ export default ({ navigation, route }) => {
           </View>
           <View style={customStyles.playerDataItem}>
             <View style={customStyles.totalScoreContainer}>
-              <Text style={customStyles.totalScore}>{`Total Score`}</Text>
+              <View style={customStyles.totalScoreTitle}>
+                <Text>Total Score</Text>
+              </View>
               <Text style={customStyles.totalScore}>{playerScore}</Text>
             </View>
             <View style={customStyles.difficultyStatusContainer}>
-              <Text style={customStyles.difficultyStatus}>{`Difficulty`}</Text>
+              <Text style={customStyles.difficultyStatus}>Difficulty</Text>
               <Text style={customStyles.difficultyStatus}>
                 {capitalize(playerDifficulty)}
               </Text>
             </View>
           </View>
         </View>
+
         <View>
           <SudokuBoard navigation={navigation} route={route} board={board} />
-          <View style={customStyles.buttonGroup}>
-            <View style={customStyles.difficultyPicker}>
-              <Text>Pick a difficulty:</Text>
-              <TouchableOpacity
-                style={customStyles.difficultyButtonEasy}
-                onPress={() => dispatch(fetchBoard("easy"))}
-              >
-                <Text style={customStyles.difficultyText}>Easy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={customStyles.difficultyButtonMedium}
-                onPress={() => dispatch(fetchBoard("medium"))}
-              >
-                <Text style={customStyles.difficultyText}>Medium</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={customStyles.difficultyButtonHard}
-                onPress={() => dispatch(fetchBoard("hard"))}
-              >
-                <Text style={customStyles.difficultyText}>Hard</Text>
-              </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={customStyles.buttonGroup}>
+              <View style={customStyles.difficultyPicker}>
+                <Text>Pick a difficulty:</Text>
+                <TouchableOpacity
+                  style={customStyles.difficultyButtonEasy}
+                  onPress={() => dispatch(fetchBoard("easy"))}
+                >
+                  <Text style={customStyles.difficultyText}>Easy</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={customStyles.difficultyButtonMedium}
+                  onPress={() => dispatch(fetchBoard("medium"))}
+                >
+                  <Text style={customStyles.difficultyText}>Medium</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={customStyles.difficultyButtonHard}
+                  onPress={() => dispatch(fetchBoard("hard"))}
+                >
+                  <Text style={customStyles.difficultyText}>Hard</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={customStyles.boardAction}>
+                <TouchableOpacity
+                  style={customStyles.button}
+                  onPress={() => dispatch(validateSudoku(board))}
+                >
+                  <Text style={customStyles.buttonText}>Apply</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={customStyles.button}
+                  onPress={() => dispatch(solveSudoku(board))}
+                >
+                  <Text style={customStyles.buttonText}>Give Up!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={customStyles.button}
+                  onPress={() => dispatch(resetSudoku(board))}
+                >
+                  <Text style={customStyles.buttonText}>Reset</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={customStyles.boardAction}>
+                <TouchableOpacity
+                  style={customStyles.runAwayButton}
+                  onPress={handleFinishButton}
+                >
+                  <Text style={customStyles.runAwayText}>RUN AWAY??</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={customStyles.boardAction}>
-              <TouchableOpacity
-                style={customStyles.button}
-                onPress={() => dispatch(validateSudoku(board))}
-              >
-                <Text style={customStyles.buttonText}>Apply</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={customStyles.button}
-                onPress={() => dispatch(solveSudoku(board))}
-              >
-                <Text style={customStyles.buttonText}>Give Up!</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={customStyles.button}
-                onPress={() => dispatch(resetSudoku(board))}
-              >
-                <Text style={customStyles.buttonText}>Reset</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={customStyles.boardAction}>
-              <TouchableOpacity
-                style={customStyles.runAwayButton}
-                onPress={handleFinishButton}
-              >
-                <Text style={customStyles.runAwayText}>RUN AWAY??</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </TouchableWithoutFeedback>
         </View>
       </>
     );
@@ -218,8 +230,14 @@ const customStyles = StyleSheet.create({
   playerDetails: {
     alignItems: "flex-start"
   },
+  totalScoreTitle: {
+    borderBottomColor: "black",
+    borderBottomWidth: 1
+  },
   totalScore: {
-    marginVertical: 3
+    marginVertical: 3,
+    borderTopWidth: 2,
+    borderTopColor: "pink"
   },
   lottieLoading: {
     height: 200,
@@ -285,7 +303,10 @@ const customStyles = StyleSheet.create({
     fontWeight: "bold"
   },
   totalScoreContainer: {
-    alignItems: "center"
+    alignItems: "center",
+    borderWidth: 2,
+    borderRadius: 8,
+    padding: 8
   },
   difficultyStatusContainer: {
     alignItems: "center"

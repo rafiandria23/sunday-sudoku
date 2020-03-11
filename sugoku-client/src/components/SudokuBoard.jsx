@@ -1,12 +1,72 @@
-import React from "react";
-import { TextInput, View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { TextInput, View, StyleSheet, Animated } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { setSudoku } from "../actions/boardActions";
 
 export default props => {
   const dispatch = useDispatch();
+  const animatedValue = new Animated.Value(0);
   const { board, navigation, route } = props;
+
+  const generateRandomColor = () => {
+    const randomColor =
+      "rgb(" +
+      Math.floor(Math.random() * 256) +
+      "," +
+      Math.floor(Math.random() * 256) +
+      "," +
+      Math.floor(Math.random() * 256) +
+      ")";
+    return randomColor;
+  };
+
+  const repeatRandomColors = times => {
+    return "a"
+      .repeat(times)
+      .split("")
+      .map(color => generateRandomColor());
+  };
+
+  const increaseDouble = (targetNumber, increment) => {
+    const result = [];
+    for (let i = 0; i <= targetNumber; i += +`0.${increment}`) {
+      result.push(+i.toFixed(1));
+    }
+    return result;
+  };
+
+  // const backgroundColorConfig = animatedValue.interpolate({
+  //   inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
+  //   outputRange: [
+  //     "#E2EF70",
+  //     "#F038FF",
+  //     "#CA61C3",
+  //     "#CA61C3",
+  //     "#3772FF",
+  //     "#70E4EF"
+  //   ]
+  // });
+
+  console.log(increaseDouble(1));
+
+  const backgroundColorConfig = animatedValue.interpolate({
+    inputRange: increaseDouble(1, 2),
+    outputRange: repeatRandomColors(6)
+  });
+
+  const startBackgroundColorAnimation = () => {
+    Animated.loop(
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 15000
+      })
+    ).start();
+  };
+
+  useEffect(() => {
+    startBackgroundColorAnimation();
+  }, []);
 
   const handleNumberChange = (text, coordinate) => {
     const nums = "123456789";
@@ -41,16 +101,20 @@ export default props => {
       const columns = row.map((col, colIdx) => {
         indexKey++;
         return (
-          <TextInput
-            onChangeText={text => handleNumberChange(text, [rowIdx, colIdx])}
+          <Animated.View
             key={indexKey}
-            style={
-              col.val.length > 0 ? styles.boardItemFilled : styles.boardItem
-            }
-            value={col.val}
-            keyboardType="number-pad"
-            editable={col.canChange}
-          />
+            style={[{ backgroundColor: backgroundColorConfig }]}
+          >
+            <TextInput
+              onChangeText={text => handleNumberChange(text, [rowIdx, colIdx])}
+              style={
+                col.val.length > 0 ? styles.boardItemFilled : styles.boardItem
+              }
+              value={col.val}
+              keyboardType="number-pad"
+              editable={col.canChange}
+            />
+          </Animated.View>
         );
       });
       return (
@@ -69,20 +133,20 @@ const styles = StyleSheet.create({
   boardItem: {
     width: 40,
     height: 40,
-    borderColor: "pink",
+    borderColor: "white",
     borderWidth: 1,
     fontSize: 20,
-    color: "green",
+    color: "black",
     textAlign: "center"
   },
   boardItemFilled: {
     width: 40,
     height: 40,
-    borderColor: "pink",
-    backgroundColor: "blue",
-    borderWidth: 1,
+    backgroundColor: "white",
+    borderWidth: 0.1,
+    borderColor: "grey",
     fontSize: 20,
-    color: "white",
+    color: "black",
     textAlign: "center"
   },
   boardContainer: {

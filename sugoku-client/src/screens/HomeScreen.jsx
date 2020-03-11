@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Text,
   View,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   StyleSheet,
   KeyboardAvoidingView,
   Animated
@@ -22,12 +24,12 @@ export default ({ navigation, route }) => {
   const backgroundColorConfig = animatedValue.interpolate({
     inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
     outputRange: [
-      "#FFEB3B",
-      "#CDDC39",
-      "#009688",
-      "#03A9F4",
-      "#3F51B5",
-      "#FFEB3B"
+      "#E8D7FF",
+      "#FFD3E8",
+      "#FFD7D5",
+      "#F3FFE1",
+      "#DFFFD6",
+      "#DFFFD6"
     ]
   });
 
@@ -61,25 +63,27 @@ export default ({ navigation, route }) => {
       style={[styles.centerOnly, { backgroundColor: backgroundColorConfig }]}
     >
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <View style={styles.centerOnly}>
-          <View style={customStyles.nameContainer}>
-            <Text>Please type your name:</Text>
-            <TextInput
-              style={customStyles.nameField}
-              value={playerName}
-              onChangeText={text => handleChangeName(text)}
-            />
-          </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.centerOnly}>
+            <View style={customStyles.nameContainer}>
+              <Text>Please type your name:</Text>
+              <TextInput
+                style={customStyles.nameField}
+                value={playerName}
+                onChangeText={text => handleChangeName(text)}
+              />
+            </View>
 
-          <View>
-            <TouchableOpacity
-              onPress={handleNextButton}
-              style={customStyles.nextButton}
-            >
-              <Text style={customStyles.nextButtonText}>Next!</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                onPress={handleNextButton}
+                style={customStyles.nextButton}
+              >
+                <Text style={customStyles.nextButtonText}>Next!</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </Animated.View>
   );
@@ -89,7 +93,8 @@ const customStyles = StyleSheet.create({
   nameField: {
     width: 300,
     height: 50,
-    borderColor: "blue",
+    borderColor: "white",
+    backgroundColor: "white",
     borderWidth: 3,
     fontSize: 20,
     textAlign: "center",
