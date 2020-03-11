@@ -12,6 +12,7 @@ export default ({ navigation, route }) => {
   const playerName = useSelector(state => state.playerReducer.name);
   const playerScore = useSelector(state => state.playerReducer.score);
   const playerDifficulty = useSelector(state => state.playerReducer.difficulty);
+  const leaderboard = useSelector(state => state.leaderboardReducer.players);
 
   const handleDifficultyChange = difficulty => {
     dispatch(setPlayerDifficulty(difficulty));
@@ -22,8 +23,15 @@ export default ({ navigation, route }) => {
       name: playerName,
       score: playerScore
     };
-    dispatch(addPlayer(playerData));
-    navigation.navigate("Board", { difficulty: playerDifficulty });
+    const validatedPlayers = leaderboard.filter(
+      player => player.name === playerData.name
+    );
+    if (validatedPlayers.length > 0) {
+      navigation.navigate("Board", { difficulty: playerDifficulty });
+    } else {
+      dispatch(addPlayer(playerData));
+      navigation.navigate("Board", { difficulty: playerDifficulty });
+    }
   };
 
   return (

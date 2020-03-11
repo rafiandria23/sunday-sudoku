@@ -23,6 +23,7 @@ export default ({ navigation, route }) => {
   const difficulty = route.params.difficulty;
   const board = useSelector(state => state.boardReducer.board);
   const status = useSelector(state => state.boardReducer.status);
+  const playerDifficulty = useSelector(state => state.playerReducer.difficulty);
 
   useEffect(() => {
     dispatch(setSudokuStatus(""));
@@ -36,7 +37,14 @@ export default ({ navigation, route }) => {
     }
   }, [status]);
 
+  useEffect(() => {
+    if (playerScore !== 0) {
+      navigation.navigate("Finish");
+    }
+  }, [playerScore]);
+
   const countdownOnFinish = () => {
+    alert(`Time's up!`);
     navigation.navigate("Finish");
   };
 
@@ -74,7 +82,9 @@ export default ({ navigation, route }) => {
             </View>
             <View style={customStyles.difficultyStatusContainer}>
               <Text style={customStyles.difficultyStatus}>{`Difficulty`}</Text>
-              <Text style={customStyles.difficultyStatus}>{playerScore}</Text>
+              <Text style={customStyles.difficultyStatus}>
+                {capitalize(playerDifficulty)}
+              </Text>
             </View>
           </View>
         </View>
@@ -193,7 +203,7 @@ const customStyles = StyleSheet.create({
     alignItems: "flex-start"
   },
   totalScore: {
-    marginVertical: 5
+    marginVertical: 3
   },
   lottieLoading: {
     height: 200,
@@ -257,5 +267,14 @@ const customStyles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontWeight: "bold"
+  },
+  totalScoreContainer: {
+    alignItems: "center"
+  },
+  difficultyStatusContainer: {
+    alignItems: "center"
+  },
+  difficultyStatus: {
+    marginVertical: 3
   }
 });
