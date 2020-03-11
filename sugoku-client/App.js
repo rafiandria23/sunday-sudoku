@@ -9,7 +9,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import store from './src/stores';
 
 // LOCAL COMPONENTS
-import { HomeScreen, BoardScreen, FinishScreen } from './src/screens';
+import {
+  HomeScreen,
+  BoardScreen,
+  FinishScreen,
+  DifficultySelectionScreen
+} from './src/screens';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +27,11 @@ export default function App() {
             name='Home'
             component={HomeScreen}
             options={{ headerTitle: 'Welcome to Sunday Sudoku!' }}
+          />
+          <Stack.Screen
+            name='Difficulty Selection'
+            component={DifficultySelectionScreen}
+            options={{ headerTitle: 'Select a Difficulty!' }}
           />
           <Stack.Screen
             name='Board'

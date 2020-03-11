@@ -17,22 +17,18 @@ import { fetchBoard } from '../actions/boardActions';
 export default ({ navigation, route }) => {
   const dispatch = useDispatch();
   const playerName = useSelector(state => state.playerReducer.name);
-  const playerDifficulty = useSelector(state => state.playerReducer.difficulty);
 
   const handleChangeName = name => {
     dispatch(setPlayerName(name));
   };
 
-  const handleDifficultyChange = difficulty => {
-    dispatch(setPlayerDifficulty(difficulty));
-  };
-
-  const handlePlayButton = () => {
+  const handleNextButton = () => {
     if (playerName.length < 1) {
       alert('Player name cannot be empty!');
     } else {
       // dispatch(fetchBoard(playerDifficulty));
-      navigation.navigate('Board', { difficulty: playerDifficulty });
+      // navigation.navigate('Board', { difficulty: playerDifficulty });
+      navigation.navigate('Difficulty Selection');
     }
   };
 
@@ -47,25 +43,12 @@ export default ({ navigation, route }) => {
         />
       </View>
 
-      <View style={customStyles.difficultyContainer}>
-        <Text>Select difficulty</Text>
-        <Picker
-          selectedValue={playerDifficulty}
-          style={customStyles.difficultyPicker}
-          onValueChange={itemValue => handleDifficultyChange(itemValue)}
-        >
-          <Picker.Item label='Easy' value='easy' />
-          <Picker.Item label='Medium' value='medium' />
-          <Picker.Item label='Hard' value='hard' />
-        </Picker>
-      </View>
-
       <View>
         <TouchableOpacity
-          onPress={handlePlayButton}
-          style={customStyles.playButton}
+          onPress={handleNextButton}
+          style={customStyles.nextButton}
         >
-          <Text style={customStyles.playButtonText}>Play!</Text>
+          <Text style={customStyles.nextButtonText}>Next!</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -84,18 +67,14 @@ const customStyles = StyleSheet.create({
     padding: 8,
     borderRadius: 8
   },
-  difficultyPicker: {
-    height: 100,
-    width: 200
-  },
-  playButton: {
+  nextButton: {
     alignItems: 'center',
     backgroundColor: 'pink',
     padding: 10,
     borderRadius: 8,
     width: 200
   },
-  playButtonText: {
+  nextButtonText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white'
@@ -104,11 +83,5 @@ const customStyles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center'
-  },
-  difficultyContainer: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    margin: 20
   }
 });
