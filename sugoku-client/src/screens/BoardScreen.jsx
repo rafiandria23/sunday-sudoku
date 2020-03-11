@@ -52,6 +52,22 @@ export default ({ navigation, route }) => {
     navigation.navigate("Finish");
   };
 
+  const decidePlayDuration = () => {
+    switch (playerDifficulty) {
+      case "easy":
+        return 60 * 15;
+
+      case "medium":
+        return 60 * 12;
+
+      case "hard":
+        return 60 * 9;
+
+      default:
+        return 60 * 15;
+    }
+  };
+
   const renderBoardScreen = () => {
     return (
       <>
@@ -67,7 +83,7 @@ export default ({ navigation, route }) => {
             >{`Time Remaining`}</Text>
             <CountDown
               style={customStyles.countdown}
-              until={60 * 15}
+              until={decidePlayDuration()}
               size={20}
               onFinish={countdownOnFinish}
               digitStyle={{ backgroundColor: "#FFF" }}
