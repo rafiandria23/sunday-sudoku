@@ -68,8 +68,14 @@ export default ({ navigation, route }) => {
             />
           </View>
           <View style={customStyles.playerDataItem}>
-            <Text style={customStyles.totalScore}>{`Total Score`}</Text>
-            <Text style={customStyles.totalScore}>{playerScore}</Text>
+            <View style={customStyles.totalScoreContainer}>
+              <Text style={customStyles.totalScore}>{`Total Score`}</Text>
+              <Text style={customStyles.totalScore}>{playerScore}</Text>
+            </View>
+            <View style={customStyles.difficultyStatusContainer}>
+              <Text style={customStyles.difficultyStatus}>{`Difficulty`}</Text>
+              <Text style={customStyles.difficultyStatus}>{playerScore}</Text>
+            </View>
           </View>
         </View>
         <View>
