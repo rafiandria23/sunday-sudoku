@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,6 @@ import {
   validateSudoku,
   solveSudoku,
   resetSudoku,
-  setSudoku,
   setSudokuStatus
 } from '../actions/boardActions';
 
@@ -95,6 +94,7 @@ export default ({ navigation, route }) => {
               until={decidePlayDuration()}
               size={20}
               onFinish={countdownOnFinish}
+              // onChange={e => console.log(e)}
               digitStyle={{ backgroundColor: '#FFF' }}
               digitTxtStyle={{ color: 'blue' }}
               timeToShow={['M', 'S']}
