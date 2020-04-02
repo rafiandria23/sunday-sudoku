@@ -1,10 +1,14 @@
 {
   "expo": {
     "name": "Sunday Sudoku",
-    "slug": "sugoku-client",
+    "slug": "sunday-sudoku",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/mug.png",
@@ -16,9 +20,19 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sunday.sudoku",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.sunday.sudoku",
+      "versionCode": 1
+    },
+    "description": "Hacktiv8 Phase 3, React Native Challenge.",
+    "githubUrl": "https://github.com/rafiandria23/sunday-sudoku"
   }
 }
